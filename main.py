@@ -1,4 +1,15 @@
 import os
+from collections import deque
+
+
+# Estrutura de dados
+estoque = []
+fila_consumo = deque()
+pilha_consumo = []
+
+
+
+#Funções
 
 def limpa_tela():
     comando = 'cls' if os.name == 'nt' else 'clear'
@@ -26,6 +37,34 @@ def input_nao_vazio(mensagem):
 def retorna_menu():
     input("\n\n◀️ Insira qualquer valor para voltar ao menu!")
     main_estoque()
+
+#Algoritimos de ordenação
+def merge_sort(lista, chave):
+    if len(lista) <= 1:
+        return lista
+    meio = len(lista) // 2
+    esquerda = merge_sort(lista[:meio], chave)
+    direita = merge_sort(lista[meio:], chave)
+    return merge(esquerda, direita, chave)
+
+def merge(esquerda, direita, chave):
+    resultado = []
+    while esquerda and direita:
+        if esquerda[0][chave] <= direita[0][chave]:
+            resultado.append(esquerda.pop(0))
+        else:
+            resultado.append(direita.pop(0))
+    resultado.extend(esquerda if esquerda else direita)
+    return resultado
+
+def quick_sort(lista, chave):
+    if len(lista) <= 1:
+        return lista
+    pivo = lista[0]
+    menores = [x for x in lista[1:] if x[chave] <= pivo[chave]]
+    maiores = [x for x in lista[1:] if x[chave]> pivo[chave]]
+    return quick_sort(menores, chave) + [pivo] + quick_sort(maiores, chave)
+
 
 
 def main_estoque():
@@ -71,3 +110,7 @@ def compra():
 
 def relatorio_estoque():
     limpa_tela()
+
+# Executar
+if __name__ == "__main__":
+    main_estoque()
