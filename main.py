@@ -65,6 +65,24 @@ def quick_sort(lista, chave):
     maiores = [x for x in lista[1:] if x[chave]> pivo[chave]]
     return quick_sort(menores, chave) + [pivo] + quick_sort(maiores, chave)
 
+#Algoritimos de busca 
+def busca_sequencial(lista, nome):
+    for item in lista:
+        if item["nome"].lower() == nome.lower():
+            return item
+    return None
+
+def busca_binaria(lista, nome):
+    inicio, fim = 0, len(lista) - 1
+    while inicio <= fim:
+        meio = (inicio + fim) // 2
+        if lista[meio]["nome"].lower() == nome.lower():
+            return lista[meio]
+        elif lista[meio]["nome"].lower() < nome.lower():
+            inicio = meio + 1
+        else:
+            fim = meio - 1
+    return None
 
 
 def main_estoque():
