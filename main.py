@@ -1,160 +1,151 @@
 import os
+import random
 from collections import deque
 
+# Estruturas de dados
 
-# Estrutura de dados
 estoque = []
-fila_consumo = deque()
-pilha_consumo = []
+fila_consumo = deque()   
+pilha_consumo = []       
 
 
-
-#Funções
-
+# Utilidades de I/O
 def limpa_tela():
     comando = 'cls' if os.name == 'nt' else 'clear'
     os.system(comando)
 
-# Garante que o usuário escolha uma opção válida da lista
+def pausa():
+    input("\n\n◀️  Pressione Enter para voltar ao menu...")
+
 def forca_opcao(lista, mensagem):
     while True:
-        escolha = input(mensagem)
+        escolha = input(mensagem).strip()
         if escolha not in lista:
-            print("⚠️  Escolha inválida")
+            print("⚠️  Escolha inválida.")
         else:
             return escolha
 
-# Solicita input até que um texto não vazio seja fornecido
 def input_nao_vazio(mensagem):
     while True:
-        variavel = input(mensagem)
+        variavel = input(mensagem).strip()
         if variavel == "":
-            print(f"⚠️ Texto não pode ser vazio")
+            print("⚠️  Texto não pode ser vazio.")
         else:
             return variavel
 
-# Aguarda o usuário pressionar Enter e retorna ao menu principal
-def retorna_menu():
-    input("\n\n◀️ Insira qualquer valor para voltar ao menu!")
-    main_estoque()
+def input_inteiro(mensagem, minimo=None, maximo=None):
+    while True:
+        txt = input(mensagem).strip()
+        try:
+            val = int(txt)
+            if minimo is not None and val < minimo:
+                print(f"⚠️  Valor deve ser ≥ {minimo}.")
+                continue
+            if maximo is not None and val > maximo:
+                print(f"⚠️  Valor deve ser ≤ {maximo}.")
+                continue
+            return val
+        except ValueError:
+            print("⚠️  Digite um número inteiro válido.")
 
-#Algoritimos de ordenação
+# Algoritmos de Ordenação
 def merge_sort(lista, chave):
+    """Merge Sort estável: O(n log n)."""
     if len(lista) <= 1:
         return lista
     meio = len(lista) // 2
     esquerda = merge_sort(lista[:meio], chave)
-    direita = merge_sort(lista[meio:], chave)
+    direita  = merge_sort(lista[meio:], chave)
     return merge(esquerda, direita, chave)
 
-def merge(esquerda, direita, chave):
-    resultado = []
-    while esquerda and direita:
-        if esquerda[0][chave] <= direita[0][chave]:
-            resultado.append(esquerda.pop(0))
+def merge(esq, dir, chave):
+    """Intercalação sem pop(0), usando ponteiros (eficiente)."""
+    i = j = 0
+    res = []
+    while i < len(esq) and j < len(dir):
+        if esq[i][chave] <= dir[j][chave]:
+            res.append(esq[i]); i += 1
         else:
-            resultado.append(direita.pop(0))
-    resultado.extend(esquerda if esquerda else direita)
-    return resultado
+            res.append(dir[j]); j += 1
+    res.extend(esq[i:])
+    res.extend(dir[j:])
+    return res
 
 def quick_sort(lista, chave):
+    """Quick Sort com pivô aleatório: médio O(n log n)."""
     if len(lista) <= 1:
         return lista
-    pivo = lista[0]
-    menores = [x for x in lista[1:] if x[chave] <= pivo[chave]]
-    maiores = [x for x in lista[1:] if x[chave]> pivo[chave]]
+    pivo = random.choice(lista)
+    menores = [x for x in lista if x is not pivo and x[chave] <= pivo[chave]]
+    maiores = [x for x in lista if x is not pivo and x[chave] >  pivo[chave]]
     return quick_sort(menores, chave) + [pivo] + quick_sort(maiores, chave)
 
-#Algoritimos de busca 
+# Algoritmos de Busca
 def busca_sequencial(lista, nome):
+    alvo = nome.lower()
     for item in lista:
-        if item["nome"].lower() == nome.lower():
+        if item["nome"].lower() == alvo:
             return item
     return None
 
-def busca_binaria(lista, nome):
-    inicio, fim = 0, len(lista) - 1
+def busca_binaria(lista_ordenada_por_nome, nome):
+    """Pré-condição: lista ordenada por item['nome'].lower()."""
+    alvo = nome.lower()
+    inicio, fim = 0, len(lista_ordenada_por_nome) - 1
     while inicio <= fim:
         meio = (inicio + fim) // 2
-        if lista[meio]["nome"].lower() == nome.lower():
-            return lista[meio]
-        elif lista[meio]["nome"].lower() < nome.lower():
+        nome_meio = lista_ordenada_por_nome[meio]["nome"].lower()
+        if nome_meio == alvo:
+            return lista_ordenada_por_nome[meio]
+        elif nome_meio < alvo:
             inicio = meio + 1
         else:
             fim = meio - 1
     return None
 
-
-def main_estoque():
-    limpa_tela()
-    opc_menu = ['1','2','3','4','5','0']
-
-    print("-=" * 17)
-    print('''
-        1) Cadastrar item
-        2) Listar item
-        3) Descontar item
-        4) Comprar itens
-        5) Relatório de Estoque
-        6) Relatório de Estoque
-        0) Sair
-    ''')
-    print("-=" * 17 + "\n")
-
-    escolha = forca_opcao(opc_menu, 'Qual opção o usuário deseja acessar?:\n-> ')
-    if escolha == "1":
-        cadastro_item()
-    elif escolha == "2":
-        listar_item_cadastrados()
-    elif escolha == "3":
-        registrar_consumo()
-    elif escolha == "4":
-        menu_busca()
-    elif escolha == "5":
-        menu_ordenacao()
-    elif escoha == "6":
-        relatorio_estoque()
-    elif escolha == "0":
-        print("👋 Volte sempre! =)")
-
+# Ações de Estoque
 def cadastro_item():
     limpa_tela()
+    print("📦 Cadastro de Insumo\n")
     nome = input_nao_vazio("Nome do insumo: ")
-    quantidade = int(input("Quantidade inicial: "))
+    quantidade = input_inteiro("Quantidade inicial: ", minimo=0)
     validade = input_nao_vazio("Validade (AAAA-MM-DD): ")
     estoque.append({"nome": nome, "quantidade": quantidade, "validade": validade})
     print(f"✅ {nome} cadastrado com sucesso!")
-    retorna_menu()
+    pausa()
 
 def listar_item_cadastrados():
     limpa_tela()
+    print("🗂️  Itens Cadastrados\n")
     if not estoque:
-        print("⚠️ Nenhum insumo cadastrado")
+        print("⚠️  Nenhum insumo cadastrado.")
     else:
         for item in estoque:
             print(f"- {item['nome']} | Qtd: {item['quantidade']} | Validade: {item['validade']}")
-    retorna_menu()
+    pausa()
 
 def registrar_consumo():
     limpa_tela()
+    print("🧪 Registrar Consumo de Insumo\n")
     nome = input_nao_vazio("Nome do insumo consumido: ")
     item = busca_sequencial(estoque, nome)
     if item:
         if item["quantidade"] > 0:
             item["quantidade"] -= 1
-            fila_consumo.append(nome)
-            pilha_consumo.append(nome)
-            print(f"✅ Consumo de {nome} registrado!")
+            fila_consumo.append(nome)   
+            pilha_consumo.append(nome)  
+            print(f"✅ Consumo de {nome} registrado! Quantidade atual: {item['quantidade']}")
         else:
-            print("⚠️ Estoque insuficiente!")
+            print("⚠️  Estoque insuficiente!")
     else:
-        print("⚠️ Insumo não encontrado!")
-    retorna_menu()
+        print("⚠️  Insumo não encontrado!")
+    pausa()
 
 def menu_busca():
     limpa_tela()
-    nome = input_nao_vazio("Digite o nome do insumo para buscar: ")
-    print("\n1) Busca Sequencial\n2) Busca Binária")
+    print("🔎 Buscar Insumo por Nome\n")
+    nome = input_nao_vazio("Digite o nome do insumo: ")
+    print("\n1) Busca Sequencial\n2) Busca Binária (lista ordenada por nome)")
     escolha = forca_opcao(['1','2'], "-> ")
     if escolha == "1":
         resultado = busca_sequencial(estoque, nome)
@@ -163,31 +154,71 @@ def menu_busca():
         resultado = busca_binaria(lista_ordenada, nome)
 
     if resultado:
-        print(f"🔍 Encontrado: {resultado}")
+        print(f"\n✅ Encontrado: {resultado}")
     else:
-        print("⚠️ Insumo não encontrado")
-    retorna_menu()
+        print("\n⚠️  Insumo não encontrado.")
+    pausa()
 
 def menu_ordenacao():
     limpa_tela()
-    print("\n1) MergeSort por Quantidade\n2) QuickSort por Validade")
+    print("↕️  Ordenar Estoque\n")
+    print("1) Merge Sort por QUANTIDADE\n2) Quick Sort por VALIDADE")
     escolha = forca_opcao(['1','2'], "-> ")
     if escolha == "1":
         ordenado = merge_sort(estoque, "quantidade")
     else:
         ordenado = quick_sort(estoque, "validade")
 
+    print("\n📋 Resultado da Ordenação:\n")
     for item in ordenado:
         print(f"- {item['nome']} | Qtd: {item['quantidade']} | Validade: {item['validade']}")
-    retorna_menu()
+    pausa()
 
 def relatorio_estoque():
     limpa_tela()
-    print("📊 Relatório de Estoque\n")
-    print("📌 Fila (ordem cronológica de consumo):", list(fila_consumo))
-    print("📌 Pilha (últimos consumos):", list(reversed(pilha_consumo)))
-    retorna_menu()
+    print("📊 Relatório de Consumo\n")
+    print("📌 Fila (ordem cronológica de consumo):")
+    print(list(fila_consumo))
+    print("\n📌 Pilha (últimos consumos primeiro):")
+    print(list(reversed(pilha_consumo)))
+    pausa()
 
-# Executar
+
+# Loop principal 
+def main_estoque():
+    while True:
+        limpa_tela()
+        print("-=" * 20)
+        print('''
+        1) Cadastrar item
+        2) Listar itens
+        3) Registrar consumo
+        4) Buscar item
+        5) Ordenar estoque
+        6) Relatório de consumo
+        0) Sair
+        ''')
+        print("-=" * 20 + "\n")
+
+        escolha = forca_opcao(['1','2','3','4','5','6','0'], 'Qual opção você deseja acessar?\n-> ')
+        if escolha == "1":
+            cadastro_item()
+        elif escolha == "2":
+            listar_item_cadastrados()
+        elif escolha == "3":
+            registrar_consumo()
+        elif escolha == "4":
+            menu_busca()
+        elif escolha == "5":
+            menu_ordenacao()
+        elif escolha == "6":
+            relatorio_estoque()
+        elif escolha == "0":
+            print("👋 Volte sempre! =)")
+            break
+
+
+
+# Execução
 if __name__ == "__main__":
     main_estoque()
