@@ -119,6 +119,12 @@ def main_estoque():
 
 def cadastro_item():
     limpa_tela()
+    nome = input_nao_vazio("Nome do insumo: ")
+    quantidade = int(input("Quantidade inicial: "))
+    validade = input_nao_vazio("Validade (AAAA-MM-DD): ")
+    estoque.append({"nome": nome, "quantidade": quantidade, "validade": validade})
+    print(f"✅ {nome} cadastrado com sucesso!")
+    retorna_menu()
 
 def listar_item_cadastrados():
     limpa_tela()
