@@ -128,7 +128,29 @@ def cadastro_item():
 
 def listar_item_cadastrados():
     limpa_tela()
+    if not estoque:
+        print("⚠️ Nenhum insumo cadastrado")
+    else:
+        for item in estoque:
+            print(f"- {item['nome']} | Qtd: {item['quantidade']} | Validade: {item['validade']}")
+    retorna_menu()
 
+def registrar_consumo():
+    limpa_tela()
+    nome = input_nao_vazio("Nome do insumo consumido: ")
+    item = busca_sequencial(estoque, nome)
+    if item:
+        if item["quantidade"] > 0:
+            item["quantidade"] -= 1
+            fila_consumo.append(nome)
+            pilha_consumo.append(nome)
+            print(f"✅ Consumo de {nome} registrado!")
+        else:
+            print("⚠️ Estoque insuficiente!")
+    else:
+        print("⚠️ Insumo não encontrado!")
+    retorna_menu()
+    
 def desconto():
     limpa_tela()
 
