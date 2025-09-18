@@ -96,6 +96,7 @@ def main_estoque():
         3) Descontar item
         4) Comprar itens
         5) Relatório de Estoque
+        6) Relatório de Estoque
         0) Sair
     ''')
     print("-=" * 17 + "\n")
@@ -106,10 +107,12 @@ def main_estoque():
     elif escolha == "2":
         listar_item_cadastrados()
     elif escolha == "3":
-        desconto()
+        registrar_consumo()
     elif escolha == "4":
-        compra()
+        menu_busca()
     elif escolha == "5":
+        menu_ordenacao()
+    elif escoha == "6":
         relatorio_estoque()
     elif escolha == "0":
         print("👋 Volte sempre! =)")
