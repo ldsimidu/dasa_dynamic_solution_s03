@@ -150,15 +150,43 @@ def registrar_consumo():
     else:
         print("⚠️ Insumo não encontrado!")
     retorna_menu()
-    
-def desconto():
-    limpa_tela()
 
-def compra():
+def menu_busca():
     limpa_tela()
+    nome = input_nao_vazio("Digite o nome do insumo para buscar: ")
+    print("\n1) Busca Sequencial\n2) Busca Binária")
+    escolha = forca_opcao(['1','2'], "-> ")
+    if escolha == "1":
+        resultado = busca_sequencial(estoque, nome)
+    else:
+        lista_ordenada = sorted(estoque, key=lambda x: x["nome"].lower())
+        resultado = busca_binaria(lista_ordenada, nome)
+
+    if resultado:
+        print(f"🔍 Encontrado: {resultado}")
+    else:
+        print("⚠️ Insumo não encontrado")
+    retorna_menu()
+
+def menu_ordenacao():
+    limpa_tela()
+    print("\n1) MergeSort por Quantidade\n2) QuickSort por Validade")
+    escolha = forca_opcao(['1','2'], "-> ")
+    if escolha == "1":
+        ordenado = merge_sort(estoque, "quantidade")
+    else:
+        ordenado = quick_sort(estoque, "validade")
+
+    for item in ordenado:
+        print(f"- {item['nome']} | Qtd: {item['quantidade']} | Validade: {item['validade']}")
+    retorna_menu()
 
 def relatorio_estoque():
     limpa_tela()
+    print("📊 Relatório de Estoque\n")
+    print("📌 Fila (ordem cronológica de consumo):", list(fila_consumo))
+    print("📌 Pilha (últimos consumos):", list(reversed(pilha_consumo)))
+    retorna_menu()
 
 # Executar
 if __name__ == "__main__":
