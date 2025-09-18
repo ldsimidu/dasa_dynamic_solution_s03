@@ -27,10 +27,29 @@ A aplicação implementa técnicas de **programação dinâmica com memorizaçã
 ## 🧰 Tecnologias e Conceitos Aplicados
 
 - **Linguagem:** Python 3  
-- **Estruturas:** Dicionários, Listas, Listas de tuplas ordenadas  
+- **Estruturas:** Dicionários, Listas, Deque (fila), Listas como pilha  
 - **Técnicas de Dynamic Programming:**  
-  - ✅ Função recursiva com memorização para cálculo do estoque total (`estoque_total`)
+  - ✅ Função recursiva com memorização para cálculo do estoque total (`estoque_total`)  
 
+### 📦 Estruturas de Dados no Estoque
+- **Fila (FIFO)**: usada para registrar o consumo dos insumos em ordem cronológica, permitindo **auditoria** e relatórios de histórico.  
+- **Pilha (LIFO)**: registra os últimos consumos no topo, permitindo análise rápida e até “desfazer” o último consumo.  
+
+### 🔎 Estruturas de Busca
+- **Busca Sequencial**: percorre a lista inteira, útil para estoques pequenos ou quando não há ordenação.  
+- **Busca Binária**: aplicada em listas ordenadas por nome, garantindo **rapidez e eficiência** em estoques grandes (O(log n)).  
+
+### ↕️ Algoritmos de Ordenação
+- **Merge Sort (por quantidade)**: estável, garante O(n log n) e é usado para identificar insumos com menor quantidade → **apoio na reposição**.  
+- **Quick Sort (por validade)**: rápido na prática, organiza os insumos pela data de validade → aplicação da regra **FEFO (First Expire, First Out)**, evitando desperdícios.  
+
+---
+
+## 🚀 Impacto na Solução
+- **Controle inteligente**: combina pilha e fila para rastrear consumos sob diferentes perspectivas.  
+- **Agilidade**: buscas rápidas tornam o sistema eficiente em estoques grandes.  
+- **Decisão estratégica**: ordenações ajudam a prever faltas de insumos e evitar vencimentos.  
+- **Confiabilidade**: os algoritmos asseguram que o sistema funcione de forma organizada e auditável, fundamental em ambientes hospitalares.
 
 ---
 
@@ -41,8 +60,5 @@ A aplicação implementa técnicas de **programação dinâmica com memorizaçã
 
 ```bash
 python main.py
-```
-
----
 
 
